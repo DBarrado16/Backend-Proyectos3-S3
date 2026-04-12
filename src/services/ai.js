@@ -8,7 +8,7 @@ async function generateText(event, context) {
   const response = await axios.post(
     OPENROUTER_URL,
     {
-      model: process.env.OPENROUTER_MODEL || "mistralai/mistral-7b-instruct",
+      model: process.env.OPENROUTER_MODEL || "google/gemini-2.0-flash-exp:free",
       messages: [{ role: "user", content: prompt }],
     },
     {
