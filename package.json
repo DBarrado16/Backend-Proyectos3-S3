@@ -1,0 +1,22 @@
+{
+  "name": "backend-notificaciones-ia",
+  "version": "1.0.0",
+  "description": "Backend de notificaciones con IA usando OpenRouter",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "firebase-admin": "^12.0.0",
+    "nodemailer": "^6.9.0",
+    "twilio": "^5.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
