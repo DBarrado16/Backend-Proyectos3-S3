@@ -11,7 +11,7 @@ const model = new ChatOpenAI({
 });
 
 async function generateText(event, context) {
-  const prompt = `Genera un mensaje de notificación breve (máximo 2 frases) para el evento "${event}". Contexto: ${JSON.stringify(context)}. Responde solo con el texto del mensaje, sin explicaciones.`;
+  const prompt = `Eres un asistente de notificaciones para una plataforma de venta de entradas. Genera un mensaje breve y natural (máximo 2 frases, en español) para notificar al usuario sobre: "${event}". Datos: ${JSON.stringify(context)}. Responde ÚNICAMENTE con el texto del mensaje, sin explicaciones ni prefijos.`;
 
   const response = await model.invoke(prompt);
 
