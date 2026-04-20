@@ -1,25 +1,21 @@
-const axios = require("axios");
+const { ChatOpenAI } = require("@langchain/openai");
 
-const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+const model = new ChatOpenAI({
+  modelName: process.env.OPENROUTER_MODEL || "google/gemma-4-26b-a4b-it:free",
+  openAIApiKey: process.env.OPENROUTER_API_KEY,
+  configuration: {
+    baseURL: "https://openrouter.ai/api/v1",
+  },
+  temperature: 0.7,
+  maxTokens: 150,
+});
 
 async function generateText(event, context) {
   const prompt = `Genera un mensaje de notificación breve (máximo 2 frases) para el evento "${event}". Contexto: ${JSON.stringify(context)}. Responde solo con el texto del mensaje, sin explicaciones.`;
 
-  const response = await axios.post(
-    OPENROUTER_URL,
-    {
-      model: process.env.OPENROUTER_MODEL || "google/gemini-2.0-flash-exp:free",
-      messages: [{ role: "user", content: prompt }],
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await model.invoke(prompt);
 
-  return response.data.choices[0].message.content.trim();
+  return response.content.trim();
 }
 
 module.exports = { generateText };

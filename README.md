@@ -1,14 +1,14 @@
 # Backend de Notificaciones con IA
 
-Backend que recibe triggers desde un front-end React, genera texto con IA (OpenRouter) y despacha notificaciones por push, email o SMS.
+Backend que recibe triggers desde un front-end React, genera texto con IA (LangChain + OpenRouter) y despacha notificaciones por Telegram, email o push (WebSocket).
 
 ## Stack
 
 - **Node.js + Express** - Servidor HTTP
-- **OpenRouter API** - Generacion de texto con Mistral 7B
-- **Firebase Cloud Messaging** - Notificaciones push
+- **LangChain + OpenRouter** - Generacion de texto con Gemma 3 27B (gratuito)
+- **WebSocket (ws)** - Notificaciones push en tiempo real
 - **Nodemailer / SendGrid** - Email
-- **Twilio** - SMS
+- **Telegram Bot API** - Mensajes por Telegram
 
 ## Instalacion
 
@@ -42,10 +42,11 @@ Endpoint: `POST /trigger`
 {
   "event": "order_placed",
   "context": { "userName": "Ana", "orderId": "1234" },
-  "channels": ["email", "push"],
+  "channels": ["email", "push", "telegram"],
   "recipient": {
     "email": "ana@example.com",
-    "pushToken": "fcm_token_aqui"
+    "userId": "user123",
+    "telegramChatId": "123456789"
   }
 }
 ```
@@ -58,21 +59,36 @@ Endpoint: `POST /trigger`
   "text": "Hola Ana, tu pedido #1234 ha sido confirmado.",
   "results": [
     { "channel": "email", "ok": true },
-    { "channel": "push", "ok": true }
+    { "channel": "push", "ok": true },
+    { "channel": "telegram", "ok": true }
   ]
 }
+```
+
+## Push por WebSocket
+
+El cliente se conecta a `ws://localhost:3000` y se registra enviando:
+
+```json
+{ "type": "register", "userId": "user123" }
+```
+
+Las notificaciones llegan como:
+
+```json
+{ "type": "notification", "text": "...", "timestamp": "..." }
 ```
 
 ## Estructura del proyecto
 
 ```
 src/
-  index.js              - Punto de entrada, configura Express
+  index.js              - Punto de entrada, Express + WebSocket
   routes/trigger.js     - Recibe POST /trigger
-  services/ai.js        - Llama a OpenRouter para generar texto
+  services/ai.js        - LangChain llama a OpenRouter (Gemma 3 27B)
   services/dispatcher.js - Enruta la notificacion por canal
   channels/
-    push.js             - Envio via Firebase Cloud Messaging
+    push.js             - Push via WebSocket
     email.js            - Envio via Nodemailer/SendGrid
-    sms.js              - Envio via Twilio
+    telegram.js         - Envio via Telegram Bot API
 ```

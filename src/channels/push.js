@@ -1,27 +1,55 @@
-const admin = require("firebase-admin");
+const { WebSocketServer } = require("ws");
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-    }),
+// Mapa de clientes conectados: userId -> ws
+const clients = new Map();
+
+function initWebSocket(server) {
+  const wss = new WebSocketServer({ server });
+
+  wss.on("connection", (ws, req) => {
+    // El cliente envía su userId al conectarse
+    ws.on("message", (data) => {
+      try {
+        const msg = JSON.parse(data);
+        if (msg.type === "register" && msg.userId) {
+          clients.set(msg.userId, ws);
+          console.log(`Cliente registrado: ${msg.userId}`);
+        }
+      } catch (err) {
+        // Ignorar mensajes no JSON
+      }
+    });
+
+    ws.on("close", () => {
+      // Eliminar cliente desconectado
+      for (const [userId, client] of clients) {
+        if (client === ws) {
+          clients.delete(userId);
+          console.log(`Cliente desconectado: ${userId}`);
+          break;
+        }
+      }
+    });
   });
+
+  console.log("WebSocket Server inicializado");
 }
 
 async function sendPush(text, recipient) {
-  if (!recipient.pushToken) {
-    throw new Error("Falta pushToken en recipient");
+  if (!recipient.userId) {
+    throw new Error("Falta userId en recipient para push");
   }
 
-  await admin.messaging().send({
-    token: recipient.pushToken,
-    notification: {
-      title: "Nueva notificación",
-      body: text,
-    },
-  });
+  const ws = clients.get(recipient.userId);
+  if (!ws || ws.readyState !== 1) {
+    throw new Error(`Cliente "${recipient.userId}" no conectado`);
+  }
+
+  ws.send(JSON.stringify({
+    type: "notification",
+    text,
+    timestamp: new Date().toISOString(),
+  }));
 }
 
-module.exports = { sendPush };
+module.exports = { initWebSocket, sendPush };

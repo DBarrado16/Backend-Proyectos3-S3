@@ -1,11 +1,11 @@
 const { sendPush } = require("../channels/push");
 const { sendEmail } = require("../channels/email");
-const { sendSms } = require("../channels/sms");
+const { sendTelegram } = require("../channels/telegram");
 
 const channelHandlers = {
   push: sendPush,
   email: sendEmail,
-  sms: sendSms,
+  telegram: sendTelegram,
 };
 
 async function dispatch(text, channels, recipient) {
