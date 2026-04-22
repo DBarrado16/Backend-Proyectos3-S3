@@ -41,7 +41,8 @@ app.get("/api-docs.json", (_req, res) => res.json(swaggerSpec));
 // Inicializar WebSocket para push notifications
 initWebSocket(server);
 
-server.listen(PORT, () => {
+// Bind a 0.0.0.0 para que Railway/Docker pueda alcanzar el contenedor
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
   console.log(`Swagger: http://localhost:${PORT}/api-docs`);
   console.log(`WebSocket disponible en ws://localhost:${PORT}`);
