@@ -1,94 +1,107 @@
 # Backend de Notificaciones con IA
 
-Backend que recibe triggers desde un front-end React, genera texto con IA (LangChain + OpenRouter) y despacha notificaciones por Telegram, email o push (WebSocket).
+Backend para una plataforma de venta de entradas. Recibe triggers desde el front,
+genera el texto con IA (LangChain + OpenRouter / Gemma 4) y lo manda por
+**email**, **Telegram** o **push (WebSocket)**.
+
+Incluye:
+- CRUD de **plantillas** de notificación.
+- API falsa de **estadísticas** de venta (12 "días" simulados).
+- **Swagger** en `/api-docs`.
+- Listo para **Railway**.
+
+---
 
 ## Stack
 
-- **Node.js + Express** - Servidor HTTP
-- **LangChain + OpenRouter** - Generacion de texto con Gemma 3 27B (gratuito)
-- **WebSocket (ws)** - Notificaciones push en tiempo real
-- **Nodemailer / SendGrid** - Email
-- **Telegram Bot API** - Mensajes por Telegram
+- Node.js + Express
+- LangChain + OpenRouter (`google/gemma-4-26b-a4b-it:free`)
+- Zod (validación)
+- Swagger (swagger-jsdoc + swagger-ui-express)
+- Nodemailer (email), Telegram Bot API (HTTP), `ws` (push)
 
-## Instalacion
+## Instalación
 
 ```bash
 npm install
-```
-
-## Configuracion
-
-Copia `.env.example` a `.env` y completa las variables:
-
-```bash
-cp .env.example .env
-```
-
-## Ejecucion
-
-```bash
-# Desarrollo
+cp .env.example .env   # rellena tus claves
 npm run dev
-
-# Produccion
-npm start
 ```
 
-## Uso
+Servidor: `http://localhost:3000` · Swagger: `http://localhost:3000/api-docs`
 
-Endpoint: `POST /trigger`
+---
 
+## Endpoints
+
+### `POST /trigger`
+Genera el texto con IA y lo despacha.
 ```json
 {
-  "event": "order_placed",
-  "context": { "userName": "Ana", "orderId": "1234" },
-  "channels": ["email", "push", "telegram"],
+  "event": "low_stock_tickets",
+  "context": { "eventName": "Concierto Duki", "remaining": "40%" },
+  "channels": ["email", "telegram", "push"],
   "recipient": {
     "email": "ana@example.com",
-    "userId": "user123",
-    "telegramChatId": "123456789"
+    "telegramChatId": "123456789",
+    "userId": "user123"
   }
 }
 ```
 
-### Respuesta
+### Plantillas
+- `GET /plantillas` — lista
+- `GET /plantillas/:id` — obtener una
+- `POST /plantillas` — crear `{ name (≤100), text (≤2250) }`
+- `PUT /plantillas/:id` — actualizar (name y/o text)
+- `DELETE /plantillas/:id` — borrar
 
-```json
-{
-  "ok": true,
-  "text": "Hola Ana, tu pedido #1234 ha sido confirmado.",
-  "results": [
-    { "channel": "email", "ok": true },
-    { "channel": "push", "ok": true },
-    { "channel": "telegram", "ok": true }
-  ]
-}
-```
+### Stats simuladas
+- `GET /stats/current` — lee `data/current.json` y devuelve el snapshot del día
+- `PUT /stats/current` — cambia el día activo: `{ "day": 5 }`
+- `GET /stats/days` — lista de días disponibles (1..12)
+
+Los datos viven en `data/1.json` … `data/12.json`. `current.json` apunta al activo.
+
+### Códigos de error
+| Código | Significado |
+|---|---|
+| 400 `INVALID_INPUT` / `INVALID_ID` / `INVALID_DAY` | Validación Zod fallida |
+| 404 `TEMPLATE_NOT_FOUND` / `DAY_NOT_FOUND` | Recurso no existe |
+| 500 `INTERNAL_ERROR` | Error inesperado |
+
+---
 
 ## Push por WebSocket
 
-El cliente se conecta a `ws://localhost:3000` y se registra enviando:
-
-```json
-{ "type": "register", "userId": "user123" }
+El front se conecta a `ws://localhost:3000` y se registra:
+```js
+const ws = new WebSocket("ws://localhost:3000");
+ws.onopen = () => ws.send(JSON.stringify({ type: "register", userId: "user123" }));
+ws.onmessage = (e) => console.log(JSON.parse(e.data));
 ```
 
-Las notificaciones llegan como:
+## Despliegue en Railway
 
-```json
-{ "type": "notification", "text": "...", "timestamp": "..." }
-```
+1. Sube el repo a GitHub.
+2. En Railway → *New project* → *Deploy from GitHub*.
+3. Añade las variables del `.env` en *Variables*.
+4. Railway detecta `package.json` y `railway.json`. Healthcheck en `/health`.
 
-## Estructura del proyecto
+---
+
+## Estructura
 
 ```
 src/
-  index.js              - Punto de entrada, Express + WebSocket
-  routes/trigger.js     - Recibe POST /trigger
-  services/ai.js        - LangChain llama a OpenRouter (Gemma 3 27B)
-  services/dispatcher.js - Enruta la notificacion por canal
-  channels/
-    push.js             - Push via WebSocket
-    email.js            - Envio via Nodemailer/SendGrid
-    telegram.js         - Envio via Telegram Bot API
+  index.js
+  routes/        trigger.js · plantillas.js · stats.js
+  services/      ai.js · dispatcher.js · plantillasService.js · statsService.js
+  channels/      push.js · email.js · telegram.js
+  schemas/       plantilla.js
+  swagger/       config.js
+data/
+  current.json
+  plantillas.json
+  1.json … 12.json
 ```

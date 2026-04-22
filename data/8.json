@@ -1,0 +1,43 @@
+{
+  "date": "2026-05-05",
+  "globalStats": {
+    "totalEvents": 3,
+    "totalSold": 7100,
+    "totalRevenue": 350500
+  },
+  "events": [
+    {
+      "id": "evt-duki",
+      "name": "Concierto Duki",
+      "venue": "WiZink Center",
+      "date": "2026-06-15",
+      "totalTickets": 5000,
+      "soldTickets": 4500,
+      "remainingTickets": 500,
+      "remainingPercent": 10,
+      "price": 45
+    },
+    {
+      "id": "evt-bizarrap",
+      "name": "Bizarrap Live Sessions",
+      "venue": "Palacio Vistalegre",
+      "date": "2026-07-20",
+      "totalTickets": 3000,
+      "soldTickets": 1800,
+      "remainingTickets": 1200,
+      "remainingPercent": 40,
+      "price": 55
+    },
+    {
+      "id": "evt-rosalia",
+      "name": "Rosalía Tour",
+      "venue": "Movistar Arena",
+      "date": "2026-09-10",
+      "totalTickets": 8000,
+      "soldTickets": 800,
+      "remainingTickets": 7200,
+      "remainingPercent": 90,
+      "price": 65
+    }
+  ]
+}

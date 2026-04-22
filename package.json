@@ -1,6 +1,6 @@
 {
   "name": "backend-notificaciones-ia",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Backend de notificaciones con IA usando LangChain + OpenRouter",
   "main": "src/index.js",
   "scripts": {
@@ -13,9 +13,15 @@
     "dotenv": "^16.4.0",
     "express": "^4.21.0",
     "nodemailer": "^8.0.5",
-    "ws": "^8.17.0"
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "ws": "^8.17.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

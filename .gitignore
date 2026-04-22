@@ -3,3 +3,6 @@ node_modules/
 *.log
 dist/
 Claude.md
+
+# Datos generados en runtime (la plantilla inicial sí se sube)
+data/plantillas.json
