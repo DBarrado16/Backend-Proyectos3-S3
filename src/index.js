@@ -1,4 +1,13 @@
 require("dotenv").config();
+
+// Captura errores no controlados para que sean visibles en los logs de Railway
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION:", err);
+});
+process.on("unhandledRejection", (reason) => {
+  console.error("UNHANDLED REJECTION:", reason);
+});
+
 const http = require("http");
 const express = require("express");
 const cors = require("cors");
