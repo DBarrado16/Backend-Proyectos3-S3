@@ -1,43 +1,478 @@
 {
-  "date": "2026-04-05",
-  "globalStats": {
-    "totalEvents": 3,
-    "totalSold": 480,
-    "totalRevenue": 22800
+  "snapshot_date": "2026-04-05",
+  "snapshot_day": 2,
+  "organization_id": "217395826473820192",
+  "global_stats": {
+    "total_events": 3,
+    "attendee_count": 480,
+    "gross": {
+      "display": "23.700,00 €",
+      "currency": "EUR",
+      "value": 2370000,
+      "major_value": "23700.00"
+    }
   },
   "events": [
     {
-      "id": "evt-duki",
-      "name": "Concierto Duki",
-      "venue": "WiZink Center",
-      "date": "2026-06-15",
-      "totalTickets": 5000,
-      "soldTickets": 320,
-      "remainingTickets": 4680,
-      "remainingPercent": 93.6,
-      "price": 45
+      "id": "827394521058421763",
+      "name": {
+        "text": "Concierto Duki — Ameri Tour 2026",
+        "html": "<p>Concierto Duki — Ameri Tour 2026</p>"
+      },
+      "description": {
+        "text": "Duki aterriza en Madrid con su gira Ameri Tour. Una noche única con los grandes temas de su carrera y las nuevas canciones de su último álbum.",
+        "html": "<p>Duki aterriza en Madrid con su gira <strong>Ameri Tour</strong>. Una noche única con los grandes temas de su carrera y las nuevas canciones de su último álbum.</p>"
+      },
+      "url": "https://www.eventbrite.es/e/concierto-duki-ameri-tour-2026-tickets-827394521058421763",
+      "start": {
+        "timezone": "Europe/Madrid",
+        "local": "2026-06-15T21:00:00",
+        "utc": "2026-06-15T19:00:00Z"
+      },
+      "end": {
+        "timezone": "Europe/Madrid",
+        "local": "2026-06-16T00:00:00",
+        "utc": "2026-06-15T22:00:00Z"
+      },
+      "organization_id": "217395826473820192",
+      "created": "2026-01-14T10:00:00Z",
+      "changed": "2026-04-05T23:30:00Z",
+      "published": "2026-01-20T12:00:00Z",
+      "capacity": 5000,
+      "capacity_is_custom": false,
+      "status": "live",
+      "currency": "EUR",
+      "listed": true,
+      "shareable": true,
+      "online_event": false,
+      "tx_time_limit": 480,
+      "hide_start_date": false,
+      "hide_end_date": false,
+      "locale": "es_ES",
+      "is_locked": false,
+      "privacy_setting": "unlocked",
+      "is_series": false,
+      "is_series_parent": false,
+      "is_reserved_seating": false,
+      "show_pick_a_seat": false,
+      "show_seatmap_thumbnail": false,
+      "show_colors_in_seatmap_thumbnail": false,
+      "source": "create_2.0",
+      "is_free": false,
+      "version": "3.7.0",
+      "summary": "Duki aterriza en Madrid con su gira Ameri Tour. Una noche única con los grandes temas de su carrera y las nuevas canciones de su último álbum.",
+      "logo_id": "1092837465",
+      "organizer_id": "182736459102847365",
+      "venue_id": "41284736",
+      "category_id": "103",
+      "subcategory_id": "3008",
+      "format_id": "6",
+      "resource_uri": "https://www.eventbriteapi.com/v3/events/827394521058421763/",
+      "is_externally_ticketed": false,
+      "logo": {
+        "crop_mask": null,
+        "original": {
+          "url": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1092837465%2Fduki.jpg",
+          "width": 2160,
+          "height": 1080
+        },
+        "id": "1092837465",
+        "url": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1092837465%2Fduki.jpg",
+        "aspect_ratio": "2",
+        "edge_color": "#1a1a1a",
+        "edge_color_set": true
+      },
+      "venue": {
+        "address": {
+          "address_1": "Av. de Felipe II, s/n",
+          "address_2": null,
+          "city": "Madrid",
+          "region": "Comunidad de Madrid",
+          "postal_code": "28009",
+          "country": "ES",
+          "latitude": "40.4230139",
+          "longitude": "-3.6715968",
+          "localized_address_display": "Av. de Felipe II, s/n, 28009 Madrid",
+          "localized_area_display": "Madrid",
+          "localized_multi_line_address_display": [
+            "Av. de Felipe II, s/n",
+            "28009 Madrid"
+          ]
+        },
+        "resource_uri": "https://www.eventbriteapi.com/v3/venues/41284736/",
+        "id": "41284736",
+        "age_restriction": null,
+        "capacity": 17000,
+        "name": "WiZink Center",
+        "latitude": "40.4230139",
+        "longitude": "-3.6715968"
+      },
+      "ticket_classes": [
+        {
+          "resource_uri": "https://www.eventbriteapi.com/v3/events/827394521058421763/ticket_classes/382746591087645310/",
+          "id": "382746591087645310",
+          "event_id": "827394521058421763",
+          "name": "Entrada General",
+          "description": "Acceso general al recinto. Zona de pie, sin asiento asignado.",
+          "sorting": 1,
+          "cost": {
+            "display": "45,00 €",
+            "currency": "EUR",
+            "value": 4500,
+            "major_value": "45.00"
+          },
+          "fee": {
+            "display": "4,50 €",
+            "currency": "EUR",
+            "value": 450,
+            "major_value": "4.50"
+          },
+          "tax": {
+            "display": "0,00 €",
+            "currency": "EUR",
+            "value": 0,
+            "major_value": "0.00"
+          },
+          "donation": false,
+          "free": false,
+          "minimum_quantity": 1,
+          "maximum_quantity": 10,
+          "maximum_quantity_per_order": 10,
+          "quantity_total": 5000,
+          "quantity_sold": 320,
+          "sales_start": "2026-01-20T12:00:00Z",
+          "sales_end": "2026-06-15T19:00:00Z",
+          "hidden": false,
+          "sales_channels": [
+            "online",
+            "atd"
+          ],
+          "delivery_methods": [
+            "electronic"
+          ],
+          "on_sale_status": "AVAILABLE",
+          "has_pdf_ticket": true,
+          "category": "standard",
+          "image_id": null,
+          "include_fee": false,
+          "split_fee": false,
+          "show_description": true,
+          "auto_hide": false,
+          "auto_hide_before": null,
+          "auto_hide_after": null,
+          "order_confirmation_message": null
+        }
+      ]
     },
     {
-      "id": "evt-bizarrap",
-      "name": "Bizarrap Live Sessions",
-      "venue": "Palacio Vistalegre",
-      "date": "2026-07-20",
-      "totalTickets": 3000,
-      "soldTickets": 110,
-      "remainingTickets": 2890,
-      "remainingPercent": 96.3,
-      "price": 55
+      "id": "915273648209583746",
+      "name": {
+        "text": "Bizarrap Live Sessions — Europe Tour",
+        "html": "<p>Bizarrap Live Sessions — Europe Tour</p>"
+      },
+      "description": {
+        "text": "Bizarrap presenta en directo sus BZRP Music Sessions con artistas invitados sorpresa. Show completo con producción audiovisual.",
+        "html": "<p>Bizarrap presenta en directo sus <em>BZRP Music Sessions</em> con artistas invitados sorpresa. Show completo con producción audiovisual.</p>"
+      },
+      "url": "https://www.eventbrite.es/e/bizarrap-live-sessions-europe-tour-tickets-915273648209583746",
+      "start": {
+        "timezone": "Europe/Madrid",
+        "local": "2026-07-20T22:00:00",
+        "utc": "2026-07-20T20:00:00Z"
+      },
+      "end": {
+        "timezone": "Europe/Madrid",
+        "local": "2026-07-21T01:00:00",
+        "utc": "2026-07-20T23:00:00Z"
+      },
+      "organization_id": "217395826473820192",
+      "created": "2026-01-10T09:30:00Z",
+      "changed": "2026-04-05T23:30:00Z",
+      "published": "2026-01-22T11:00:00Z",
+      "capacity": 3000,
+      "capacity_is_custom": false,
+      "status": "live",
+      "currency": "EUR",
+      "listed": true,
+      "shareable": true,
+      "online_event": false,
+      "tx_time_limit": 480,
+      "hide_start_date": false,
+      "hide_end_date": false,
+      "locale": "es_ES",
+      "is_locked": false,
+      "privacy_setting": "unlocked",
+      "is_series": false,
+      "is_series_parent": false,
+      "is_reserved_seating": false,
+      "show_pick_a_seat": false,
+      "show_seatmap_thumbnail": false,
+      "show_colors_in_seatmap_thumbnail": false,
+      "source": "create_2.0",
+      "is_free": false,
+      "version": "3.7.0",
+      "summary": "Bizarrap presenta en directo sus BZRP Music Sessions con artistas invitados sorpresa. Show completo con producción audiovisual.",
+      "logo_id": "1183746291",
+      "organizer_id": "293847561029384756",
+      "venue_id": "52739481",
+      "category_id": "103",
+      "subcategory_id": "3008",
+      "format_id": "6",
+      "resource_uri": "https://www.eventbriteapi.com/v3/events/915273648209583746/",
+      "is_externally_ticketed": false,
+      "logo": {
+        "crop_mask": null,
+        "original": {
+          "url": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1183746291%2Fbzrp.jpg",
+          "width": 2160,
+          "height": 1080
+        },
+        "id": "1183746291",
+        "url": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1183746291%2Fbzrp.jpg",
+        "aspect_ratio": "2",
+        "edge_color": "#1a1a1a",
+        "edge_color_set": true
+      },
+      "venue": {
+        "address": {
+          "address_1": "C/ de Utebo, 1",
+          "address_2": null,
+          "city": "Madrid",
+          "region": "Comunidad de Madrid",
+          "postal_code": "28025",
+          "country": "ES",
+          "latitude": "40.3897225",
+          "longitude": "-3.7285836",
+          "localized_address_display": "C/ de Utebo, 1, 28025 Madrid",
+          "localized_area_display": "Madrid",
+          "localized_multi_line_address_display": [
+            "C/ de Utebo, 1",
+            "28025 Madrid"
+          ]
+        },
+        "resource_uri": "https://www.eventbriteapi.com/v3/venues/52739481/",
+        "id": "52739481",
+        "age_restriction": null,
+        "capacity": 15000,
+        "name": "Palacio Vistalegre Arena",
+        "latitude": "40.3897225",
+        "longitude": "-3.7285836"
+      },
+      "ticket_classes": [
+        {
+          "resource_uri": "https://www.eventbriteapi.com/v3/events/915273648209583746/ticket_classes/473829510476251938/",
+          "id": "473829510476251938",
+          "event_id": "915273648209583746",
+          "name": "Entrada General",
+          "description": "Acceso general al recinto. Zona de pie, sin asiento asignado.",
+          "sorting": 1,
+          "cost": {
+            "display": "55,00 €",
+            "currency": "EUR",
+            "value": 5500,
+            "major_value": "55.00"
+          },
+          "fee": {
+            "display": "5,50 €",
+            "currency": "EUR",
+            "value": 550,
+            "major_value": "5.50"
+          },
+          "tax": {
+            "display": "0,00 €",
+            "currency": "EUR",
+            "value": 0,
+            "major_value": "0.00"
+          },
+          "donation": false,
+          "free": false,
+          "minimum_quantity": 1,
+          "maximum_quantity": 10,
+          "maximum_quantity_per_order": 10,
+          "quantity_total": 3000,
+          "quantity_sold": 110,
+          "sales_start": "2026-01-22T11:00:00Z",
+          "sales_end": "2026-07-20T20:00:00Z",
+          "hidden": false,
+          "sales_channels": [
+            "online",
+            "atd"
+          ],
+          "delivery_methods": [
+            "electronic"
+          ],
+          "on_sale_status": "AVAILABLE",
+          "has_pdf_ticket": true,
+          "category": "standard",
+          "image_id": null,
+          "include_fee": false,
+          "split_fee": false,
+          "show_description": true,
+          "auto_hide": false,
+          "auto_hide_before": null,
+          "auto_hide_after": null,
+          "order_confirmation_message": null
+        }
+      ]
     },
     {
-      "id": "evt-rosalia",
-      "name": "Rosalía Tour",
-      "venue": "Movistar Arena",
-      "date": "2026-09-10",
-      "totalTickets": 8000,
-      "soldTickets": 50,
-      "remainingTickets": 7950,
-      "remainingPercent": 99.4,
-      "price": 65
+      "id": "738461925073284691",
+      "name": {
+        "text": "Rosalía — Motomami World Tour Madrid",
+        "html": "<p>Rosalía — Motomami World Tour Madrid</p>"
+      },
+      "description": {
+        "text": "Rosalía presenta en Madrid su gira Motomami World Tour. Un espectáculo visual y sonoro con la mejor producción de su carrera.",
+        "html": "<p>Rosalía presenta en Madrid su gira <strong>Motomami World Tour</strong>. Un espectáculo visual y sonoro con la mejor producción de su carrera.</p>"
+      },
+      "url": "https://www.eventbrite.es/e/rosalia-motomami-world-tour-madrid-tickets-738461925073284691",
+      "start": {
+        "timezone": "Europe/Madrid",
+        "local": "2026-09-10T21:30:00",
+        "utc": "2026-09-10T19:30:00Z"
+      },
+      "end": {
+        "timezone": "Europe/Madrid",
+        "local": "2026-09-11T00:00:00",
+        "utc": "2026-09-10T22:00:00Z"
+      },
+      "organization_id": "217395826473820192",
+      "created": "2026-01-05T08:00:00Z",
+      "changed": "2026-04-05T23:30:00Z",
+      "published": "2026-01-18T10:00:00Z",
+      "capacity": 8000,
+      "capacity_is_custom": false,
+      "status": "live",
+      "currency": "EUR",
+      "listed": true,
+      "shareable": true,
+      "online_event": false,
+      "tx_time_limit": 480,
+      "hide_start_date": false,
+      "hide_end_date": false,
+      "locale": "es_ES",
+      "is_locked": false,
+      "privacy_setting": "unlocked",
+      "is_series": false,
+      "is_series_parent": false,
+      "is_reserved_seating": false,
+      "show_pick_a_seat": false,
+      "show_seatmap_thumbnail": false,
+      "show_colors_in_seatmap_thumbnail": false,
+      "source": "create_2.0",
+      "is_free": false,
+      "version": "3.7.0",
+      "summary": "Rosalía presenta en Madrid su gira Motomami World Tour. Un espectáculo visual y sonoro con la mejor producción de su carrera.",
+      "logo_id": "1274836592",
+      "organizer_id": "374829165038472910",
+      "venue_id": "63847502",
+      "category_id": "103",
+      "subcategory_id": "3008",
+      "format_id": "6",
+      "resource_uri": "https://www.eventbriteapi.com/v3/events/738461925073284691/",
+      "is_externally_ticketed": false,
+      "logo": {
+        "crop_mask": null,
+        "original": {
+          "url": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1274836592%2Frosalia.jpg",
+          "width": 2160,
+          "height": 1080
+        },
+        "id": "1274836592",
+        "url": "https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F1274836592%2Frosalia.jpg",
+        "aspect_ratio": "2",
+        "edge_color": "#1a1a1a",
+        "edge_color_set": true
+      },
+      "venue": {
+        "address": {
+          "address_1": "Av. de Felipe II, s/n",
+          "address_2": null,
+          "city": "Madrid",
+          "region": "Comunidad de Madrid",
+          "postal_code": "28009",
+          "country": "ES",
+          "latitude": "40.4230139",
+          "longitude": "-3.6715968",
+          "localized_address_display": "Av. de Felipe II, s/n, 28009 Madrid",
+          "localized_area_display": "Madrid",
+          "localized_multi_line_address_display": [
+            "Av. de Felipe II, s/n",
+            "28009 Madrid"
+          ]
+        },
+        "resource_uri": "https://www.eventbriteapi.com/v3/venues/63847502/",
+        "id": "63847502",
+        "age_restriction": null,
+        "capacity": 17000,
+        "name": "Movistar Arena",
+        "latitude": "40.4230139",
+        "longitude": "-3.6715968"
+      },
+      "ticket_classes": [
+        {
+          "resource_uri": "https://www.eventbriteapi.com/v3/events/738461925073284691/ticket_classes/582946371098273645/",
+          "id": "582946371098273645",
+          "event_id": "738461925073284691",
+          "name": "Entrada General",
+          "description": "Acceso general al recinto. Zona de pie, sin asiento asignado.",
+          "sorting": 1,
+          "cost": {
+            "display": "65,00 €",
+            "currency": "EUR",
+            "value": 6500,
+            "major_value": "65.00"
+          },
+          "fee": {
+            "display": "6,50 €",
+            "currency": "EUR",
+            "value": 650,
+            "major_value": "6.50"
+          },
+          "tax": {
+            "display": "0,00 €",
+            "currency": "EUR",
+            "value": 0,
+            "major_value": "0.00"
+          },
+          "donation": false,
+          "free": false,
+          "minimum_quantity": 1,
+          "maximum_quantity": 10,
+          "maximum_quantity_per_order": 10,
+          "quantity_total": 8000,
+          "quantity_sold": 50,
+          "sales_start": "2026-01-18T10:00:00Z",
+          "sales_end": "2026-09-10T19:30:00Z",
+          "hidden": false,
+          "sales_channels": [
+            "online",
+            "atd"
+          ],
+          "delivery_methods": [
+            "electronic"
+          ],
+          "on_sale_status": "AVAILABLE",
+          "has_pdf_ticket": true,
+          "category": "standard",
+          "image_id": null,
+          "include_fee": false,
+          "split_fee": false,
+          "show_description": true,
+          "auto_hide": false,
+          "auto_hide_before": null,
+          "auto_hide_after": null,
+          "order_confirmation_message": null
+        }
+      ]
     }
-  ]
+  ],
+  "pagination": {
+    "object_count": 3,
+    "page_number": 1,
+    "page_size": 50,
+    "page_count": 1,
+    "has_more_items": false,
+    "continuation": null
+  }
 }
