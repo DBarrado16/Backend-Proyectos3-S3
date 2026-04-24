@@ -15,7 +15,8 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swagger/config");
 const { initWebSocket } = require("./channels/push");
 
-const triggerRouter = require("./routes/trigger");
+const notificationsRouter = require("./routes/notifications");
+const triggersRouter = require("./routes/triggers");
 const plantillasRouter = require("./routes/plantillas");
 const statsRouter = require("./routes/stats");
 
@@ -39,7 +40,8 @@ app.use(express.json());
 app.get("/health", (_req, res) => res.json({ ok: true, uptime: process.uptime() }));
 
 // Rutas
-app.use("/trigger", triggerRouter);
+app.use("/notifications", notificationsRouter);
+app.use("/triggers", triggersRouter);
 app.use("/plantillas", plantillasRouter);
 app.use("/stats", statsRouter);
 
