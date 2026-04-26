@@ -62,7 +62,7 @@ router.post("/", async (req, res) => {
 
   try {
     const text = await generateText(event, context);
-    const results = await dispatch(text, channels, recipient);
+    //const results = await dispatch(text, channels, recipient);
     return res.json({ ok: true, text, results });
   } catch (err) {
     console.error("Error en /notifications:", err.message);
