@@ -23,6 +23,11 @@ const triggerBaseFields = {
   active: z.boolean({
     invalid_type_error: "active debe ser booleano",
   }),
+  units: z.enum(["%", "t", "d", "$"], {
+    errorMap: () => ({
+      message: "units debe ser '%' (porcentaje), 't' (tickets), 'd' (días) o '$' (dólares)",
+    }),
+  }),
 };
 
 const triggerCreateSchema = z.object({
@@ -30,8 +35,8 @@ const triggerCreateSchema = z.object({
   ...triggerBaseFields,
 });
 
-// Update: todos los campos opcionales, NO se permite eventID, y el body no puede
-// estar vacío.
+// Update: todos los campos opcionales, NO se permite eventID ni warn (warn es
+// gestionado únicamente por el servidor), y el body no puede estar vacío.
 const triggerUpdateSchema = z
   .object({
     triggerName: triggerBaseFields.triggerName.optional(),
@@ -42,8 +47,9 @@ const triggerUpdateSchema = z
     channel: triggerBaseFields.channel.optional(),
     audience: triggerBaseFields.audience.optional(),
     active: triggerBaseFields.active.optional(),
+    units: triggerBaseFields.units.optional(),
   })
-  .strict() // rechaza eventID u otros campos no esperados
+  .strict() // rechaza eventID, warn u otros campos no esperados
   .refine((data) => Object.keys(data).length > 0, {
     message: "Debes enviar al menos un campo para actualizar",
   });

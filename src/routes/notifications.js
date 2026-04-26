@@ -2,12 +2,7 @@ const { Router } = require("express");
 const { z } = require("zod");
 const { generateText } = require("../services/ai");
 const { dispatch } = require("../services/dispatcher");
-const { getCurrentStats } = require("../services/statsService");
-const {
-  resolveMetric,
-  evaluateCondition,
-  listSupportedMetrics,
-} = require("../services/metrics");
+const { listSupportedMetrics } = require("../services/metrics");
 
 const router = Router();
 
@@ -38,7 +33,7 @@ function formatZodError(err) {
  * @openapi
  * /notifications:
  *   post:
- *     summary: Evalúa una condición contra el snapshot actual y, si se cumple, genera el texto con IA y lo despacha
+ *     summary: Genera el texto con IA y lo despacha por los canales indicados (no evalúa la condición; el schema se mantiene por compatibilidad)
  *     tags: [Notifications]
  *     requestBody:
  *       required: true
@@ -48,9 +43,9 @@ function formatZodError(err) {
  *             $ref: '#/components/schemas/NotificationInput'
  *     responses:
  *       200:
- *         description: Condición evaluada (conditionMet indica si se envió o no)
+ *         description: Notificación generada y despachada
  *       400:
- *         description: Datos inválidos o métrica no soportada
+ *         description: Datos inválidos
  *       500:
  *         description: Error interno
  */
@@ -63,42 +58,12 @@ router.post("/", async (req, res) => {
     });
   }
 
-  const {
-    event,
-    context,
-    channels,
-    recipient,
-    conditionType,
-    conditionOperator,
-    conditionValue,
-    eventID,
-  } = parsed.data;
+  const { event, context, channels, recipient } = parsed.data;
 
   try {
-    const snapshot = await getCurrentStats();
-    const metric = resolveMetric(snapshot, conditionType, eventID);
-    if (!metric.ok) {
-      return res.status(400).json({ error: "INVALID_METRIC", message: metric.error });
-    }
-
-    const conditionMet = evaluateCondition(metric.value, conditionOperator, conditionValue);
-    const evaluation = {
-      conditionType,
-      conditionOperator,
-      conditionValue,
-      actualValue: metric.value,
-      scope: metric.scope,
-      eventID: metric.eventID ?? eventID ?? null,
-      snapshotDay: snapshot.day,
-    };
-
-    if (!conditionMet) {
-      return res.json({ ok: true, conditionMet: false, ...evaluation });
-    }
-
     const text = await generateText(event, context);
     const results = await dispatch(text, channels, recipient);
-    return res.json({ ok: true, conditionMet: true, ...evaluation, text, results });
+    return res.json({ ok: true, text, results });
   } catch (err) {
     console.error("Error en /notifications:", err.message);
     return res.status(500).json({ error: "INTERNAL_ERROR" });

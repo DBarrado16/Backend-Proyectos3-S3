@@ -2,6 +2,9 @@ const fs = require("fs/promises");
 const path = require("path");
 const crypto = require("crypto");
 
+const { resolveMetric, evaluateCondition } = require("./metrics");
+const { dispatch } = require("./dispatcher");
+
 const DATA_DIR = path.join(__dirname, "..", "..", "data");
 const FILE_PATH = path.join(DATA_DIR, "triggers.json");
 
@@ -49,6 +52,8 @@ async function createTrigger(data) {
     channel: data.channel,
     audience: data.audience,
     active: data.active,
+    units: data.units,
+    warn: false, // gestionado solo por el servidor
     createdAt: now,
     updatedAt: now,
   };
@@ -62,6 +67,7 @@ async function updateTrigger(id, patch) {
   const idx = all.findIndex((t) => t.id === id);
   if (idx === -1) return null;
 
+  // warn NO está en la lista: nunca se permite que el usuario lo modifique.
   const mutable = [
     "triggerName",
     "conditionType",
@@ -71,6 +77,7 @@ async function updateTrigger(id, patch) {
     "channel",
     "audience",
     "active",
+    "units",
   ];
   for (const key of mutable) {
     if (patch[key] !== undefined) {
@@ -91,10 +98,89 @@ async function deleteTrigger(id) {
   return true;
 }
 
+/**
+ * Construye un objeto recipient para el dispatcher a partir del campo
+ * `audience` (string) y el canal del trigger.
+ *   email     -> { email: audience }
+ *   telegram  -> { telegramChatId: audience }
+ *   push      -> { userId: audience }
+ */
+function buildRecipient(channel, audience) {
+  switch (channel) {
+    case "email":
+      return { email: audience };
+    case "telegram":
+      return { telegramChatId: audience };
+    case "push":
+      return { userId: audience };
+    default:
+      return {};
+  }
+}
+
+/**
+ * Evalúa la condición de cada trigger contra el snapshot dado, actualiza el
+ * campo `warn` en triggers.json en consecuencia y despacha el mensaje de los
+ * triggers con `warn === true` por su canal y a su audiencia.
+ *
+ * Devuelve un resumen con cuántos triggers se evaluaron, cuántos quedaron en
+ * estado warn y el detalle de cada despacho intentado.
+ */
+async function evaluateAndDispatchAll(snapshot) {
+  const all = await readAll();
+  const dispatches = [];
+  let warnedCount = 0;
+
+  for (const trigger of all) {
+    const metric = resolveMetric(snapshot, trigger.conditionType, trigger.eventID);
+    let warn = false;
+    if (metric.ok) {
+      warn = evaluateCondition(
+        metric.value,
+        trigger.conditionOperator,
+        trigger.conditionValue
+      );
+    }
+    trigger.warn = warn;
+    trigger.updatedAt = new Date().toISOString();
+    if (warn) warnedCount++;
+  }
+
+  await writeAll(all);
+
+  for (const trigger of all) {
+    if (!trigger.warn) continue;
+    const recipient = buildRecipient(trigger.channel, trigger.audience);
+    try {
+      const results = await dispatch(trigger.message, [trigger.channel], recipient);
+      dispatches.push({
+        triggerId: trigger.id,
+        triggerName: trigger.triggerName,
+        channel: trigger.channel,
+        results,
+      });
+    } catch (err) {
+      dispatches.push({
+        triggerId: trigger.id,
+        triggerName: trigger.triggerName,
+        channel: trigger.channel,
+        error: err.message,
+      });
+    }
+  }
+
+  return {
+    evaluated: all.length,
+    warned: warnedCount,
+    dispatches,
+  };
+}
+
 module.exports = {
   listByEvent,
   getTriggerById,
   createTrigger,
   updateTrigger,
   deleteTrigger,
+  evaluateAndDispatchAll,
 };

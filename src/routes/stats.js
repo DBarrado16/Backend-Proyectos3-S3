@@ -6,6 +6,7 @@ const {
   listDays,
   TOTAL_DAYS,
 } = require("../services/statsService");
+const { evaluateAndDispatchAll } = require("../services/triggersService");
 
 const router = Router();
 
@@ -37,7 +38,13 @@ router.get("/current", async (_req, res) => {
  * @openapi
  * /stats/current:
  *   put:
- *     summary: Cambia el día actual al que apunta current.json
+ *     summary: Cambia el día actual al que apunta current.json y reevalúa todos los triggers
+ *     description: |
+ *       Tras actualizar el día activo, evalúa la condición de cada trigger
+ *       guardado en triggers.json contra el nuevo snapshot. Si la condición se
+ *       cumple, se pone `warn = true` en el trigger; si no, `warn = false`.
+ *       Posteriormente, todos los triggers con `warn = true` envían su mensaje
+ *       por su canal y a su audiencia.
  *     tags: [Stats]
  *     requestBody:
  *       required: true
@@ -53,7 +60,7 @@ router.get("/current", async (_req, res) => {
  *                 maximum: 12
  *     responses:
  *       200:
- *         description: Día actualizado
+ *         description: Día actualizado y triggers reevaluados/despachados
  *       400:
  *         description: Día inválido
  *       404:
@@ -69,7 +76,20 @@ router.put("/current", async (req, res) => {
   }
   try {
     const result = await setCurrentDay(parsed.data.day);
-    res.json(result);
+
+    // Tras cambiar el día activo, evaluar la condición de cada trigger contra
+    // el nuevo snapshot, actualizar su campo `warn` y despachar el mensaje de
+    // los que han quedado en warn=true.
+    let triggersSummary = null;
+    try {
+      const snapshot = await getCurrentStats();
+      triggersSummary = await evaluateAndDispatchAll(snapshot);
+    } catch (err) {
+      console.error("Error evaluando/disparando triggers tras PUT /stats/current:", err.message);
+      triggersSummary = { error: "TRIGGER_EVALUATION_FAILED", message: err.message };
+    }
+
+    res.json({ ...result, triggers: triggersSummary });
   } catch (err) {
     if (err.code === "DAY_NOT_FOUND") {
       return res.status(404).json({ error: "DAY_NOT_FOUND" });

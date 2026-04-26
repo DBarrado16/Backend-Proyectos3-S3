@@ -92,6 +92,18 @@ const options = {
             channel: { type: "string", enum: ["email", "telegram", "push"] },
             audience: { type: "string" },
             active: { type: "boolean" },
+            units: {
+              type: "string",
+              enum: ["%", "t", "d", "$"],
+              description:
+                "Unidad de conditionValue: '%' (porcentaje), 't' (tickets), 'd' (días) o '$' (dólares)",
+            },
+            warn: {
+              type: "boolean",
+              readOnly: true,
+              description:
+                "Indica si la condición se cumplió en la última evaluación. Gestionado únicamente por el servidor; no se puede modificar desde la API.",
+            },
             createdAt: { type: "string", format: "date-time" },
             updatedAt: { type: "string", format: "date-time" },
           },
@@ -108,6 +120,7 @@ const options = {
             "channel",
             "audience",
             "active",
+            "units",
           ],
           properties: {
             eventID: { type: "string" },
@@ -119,11 +132,18 @@ const options = {
             channel: { type: "string", enum: ["email", "telegram", "push"] },
             audience: { type: "string" },
             active: { type: "boolean" },
+            units: {
+              type: "string",
+              enum: ["%", "t", "d", "$"],
+              description:
+                "Unidad de conditionValue: '%' (porcentaje), 't' (tickets), 'd' (días) o '$' (dólares)",
+            },
           },
         },
         TriggerUpdate: {
           type: "object",
-          description: "Todos los campos son opcionales. No se permite eventID.",
+          description:
+            "Todos los campos son opcionales. No se permite eventID ni warn (warn lo gestiona únicamente el servidor).",
           properties: {
             triggerName: { type: "string", maxLength: 50 },
             conditionType: { type: "string" },
@@ -133,6 +153,7 @@ const options = {
             channel: { type: "string", enum: ["email", "telegram", "push"] },
             audience: { type: "string" },
             active: { type: "boolean" },
+            units: { type: "string", enum: ["%", "t", "d", "$"] },
           },
         },
       },
