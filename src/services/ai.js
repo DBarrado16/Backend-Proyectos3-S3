@@ -8,7 +8,7 @@ function getModel() {
     throw new Error("OPENROUTER_API_KEY no está definido en las variables de entorno");
   }
   _model = new ChatOpenAI({
-    modelName: process.env.OPENROUTER_MODEL || "google/gemma-4-26b-a4b-it:free",
+    modelName: process.env.OPENROUTER_MODEL || "google/gemma-2-9b-it:free",
     openAIApiKey: process.env.OPENROUTER_API_KEY,
     configuration: {
       baseURL: "https://openrouter.ai/api/v1",

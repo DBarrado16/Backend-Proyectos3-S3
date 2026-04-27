@@ -62,11 +62,11 @@ router.post("/", async (req, res) => {
 
   try {
     const text = await generateText(event, context);
-    //const results = await dispatch(text, channels, recipient);
+    const results = await dispatch(text, channels, recipient);
     return res.json({ ok: true, text, results });
   } catch (err) {
-    console.error("Error en /notifications:", err.message);
-    return res.status(500).json({ error: "INTERNAL_ERROR" });
+    console.error("Error en /notifications:", err);
+    return res.status(500).json({ error: "INTERNAL_ERROR", message: err.message });
   }
 });
 
