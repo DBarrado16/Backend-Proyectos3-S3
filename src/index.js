@@ -34,6 +34,7 @@ app.use(cors({
   origin: allowedOrigins || true,
   credentials: true,
 }));
+app.use("https://evco-black.vercel.app");
 app.use(express.json());
 
 // Healthcheck para Railway
