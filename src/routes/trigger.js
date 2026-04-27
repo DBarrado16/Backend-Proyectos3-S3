@@ -51,8 +51,16 @@ router.post("/", async (req, res) => {
     const results = await dispatch(text, channels, recipient);
     return res.json({ ok: true, text, results });
   } catch (err) {
-    console.error("Error en /trigger:", err.message);
-    return res.status(500).json({ error: "INTERNAL_ERROR" });
+    console.error("Error en /trigger:", err);
+    const status = Number(err.status) || Number(err.code);
+    if (status === 429 || /rate.?limit|429/i.test(err.message || "")) {
+      return res.status(429).json({
+        error: "AI_RATE_LIMITED",
+        message:
+          "El proveedor de IA ha rechazado la petición por límite de uso. Inténtalo de nuevo en unos segundos o cambia de modelo.",
+      });
+    }
+    return res.status(500).json({ error: "INTERNAL_ERROR", message: err.message });
   }
 });
 
