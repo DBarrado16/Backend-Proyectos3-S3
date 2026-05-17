@@ -90,18 +90,92 @@ ws.onmessage = (e) => console.log(JSON.parse(e.data));
 
 ---
 
+## Autenticación JWT
+
+Todos los endpoints (excepto `/health` y `/auth/login`) requieren un token JWT.
+
+### 1. Obtener token
+
+```bash
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin"}'
+# → { "token": "eyJ...", "expiresIn": "8h" }
+```
+
+### 2. Usar el token
+
+Añade el header `Authorization: Bearer <token>` a todas las peticiones:
+
+```bash
+curl http://localhost:3000/plantillas \
+  -H "Authorization: Bearer eyJ..."
+```
+
+Las credenciales por defecto son `admin` / `admin`. Cámbialas en `.env` con `ADMIN_USERNAME` y `ADMIN_PASSWORD`. El secreto de firma del token se configura con `JWT_SECRET`.
+
+---
+
+## Testing
+
+### Herramientas
+
+| Capa | Herramienta |
+|---|---|
+| Unitario (servicios) | **Jest** |
+| Integración (rutas HTTP) | **Jest + Supertest** |
+| E2E (flujo completo FE↔BE) | **Playwright** |
+
+### Estrategia
+
+#### Tests unitarios — `src/services/`
+Verificar la lógica de negocio de cada clase de servicio de forma aislada, mockeando `fs/promises` para no tocar disco:
+- `PlantillasService`: CRUD correcto, IDs únicos, `null` en getById cuando no existe.
+- `TriggersService`: creación de triggers, `evaluateAndDispatchAll` con condiciones `>` y `<`.
+- `StatsService`: validación de rango de días, error `INVALID_DAY` / `DAY_NOT_FOUND`.
+
+#### Tests de integración — `src/routes/`
+Levantar la app en memoria con Supertest y ejercitar cada endpoint:
+- `POST /auth/login` → 200 con token / 401 con credenciales malas.
+- `GET /plantillas` sin token → 401.
+- CRUD completo de `/plantillas` y `/triggers` con token válido.
+- `PUT /stats/current` → verifica que se reevalúan los triggers.
+
+#### Tests E2E — frontend
+Con **Playwright** contra el stack completo (BE en local o staging):
+- Flujo de login: usuario introduce credenciales → token almacenado.
+- Crear un trigger desde la UI → aparece en la lista.
+- Cambiar el día activo → triggers con condición cumplida se marcan en `warn`.
+
+### Comandos previstos
+
+```bash
+# Instalar dependencias de test (pendiente)
+npm install --save-dev jest supertest
+
+# Ejecutar tests unitarios e integración
+npm test
+
+# Ejecutar tests E2E (requiere servidor arrancado)
+npx playwright test
+```
+
+---
+
 ## Estructura
 
 ```
 src/
   index.js
-  routes/        trigger.js · plantillas.js · stats.js
-  services/      ai.js · dispatcher.js · plantillasService.js · statsService.js
+  middleware/    auth.js (verifyToken JWT)
+  routes/        auth.js · trigger.js · plantillas.js · stats.js · triggers.js
+  services/      ai.js · dispatcher.js · plantillasService.js · statsService.js · triggersService.js
   channels/      push.js · email.js · telegram.js
-  schemas/       plantilla.js
+  schemas/       plantilla.js · trigger.js
   swagger/       config.js
 data/
   current.json
   plantillas.json
+  triggers.json
   1.json … 12.json
 ```

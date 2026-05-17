@@ -7,13 +7,37 @@ const options = {
     info: {
       title: "Backend Notificaciones IA",
       version: "2.1.0",
-      description: "API del backend de notificaciones con IA (LangChain + OpenRouter). Incluye triggers, plantillas y stats simulados de venta de entradas.",
+      description: "API del backend de notificaciones con IA (LangChain + OpenRouter). Incluye triggers, plantillas y stats simulados de venta de entradas.\n\n**Autenticación:** Todos los endpoints (excepto `/auth/login`) requieren un token JWT. Obténlo con `POST /auth/login` y añádelo como `Authorization: Bearer <token>`.",
     },
     servers: [
       { url: "http://localhost:3000", description: "Desarrollo local" },
     ],
+    security: [{ BearerAuth: [] }],
     components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description: "Token JWT obtenido en POST /auth/login",
+        },
+      },
       schemas: {
+        LoginInput: {
+          type: "object",
+          required: ["username", "password"],
+          properties: {
+            username: { type: "string", example: "admin" },
+            password: { type: "string", example: "admin" },
+          },
+        },
+        LoginResponse: {
+          type: "object",
+          properties: {
+            token: { type: "string", description: "JWT para incluir en Authorization: Bearer <token>" },
+            expiresIn: { type: "string", example: "8h" },
+          },
+        },
         Plantilla: {
           type: "object",
           properties: {

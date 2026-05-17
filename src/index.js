@@ -14,7 +14,9 @@ const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swagger/config");
 const { initWebSocket } = require("./channels/push");
+const { verifyToken } = require("./middleware/auth");
 
+const authRouter = require("./routes/auth");
 const notificationsRouter = require("./routes/notifications");
 const triggersRouter = require("./routes/triggers");
 const plantillasRouter = require("./routes/plantillas");
@@ -36,16 +38,19 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Healthcheck para Railway
+// Healthcheck para Railway (público, no requiere token)
 app.get("/health", (_req, res) => res.json({ ok: true, uptime: process.uptime() }));
 
-// Rutas
-app.use("/notifications", notificationsRouter);
-app.use("/triggers", triggersRouter);
-app.use("/plantillas", plantillasRouter);
-app.use("/stats", statsRouter);
+// Autenticación (público)
+app.use("/auth", authRouter);
 
-// Swagger UI
+// Rutas protegidas con JWT
+app.use("/notifications", verifyToken, notificationsRouter);
+app.use("/triggers", verifyToken, triggersRouter);
+app.use("/plantillas", verifyToken, plantillasRouter);
+app.use("/stats", verifyToken, statsRouter);
+
+// Swagger UI (público, para facilitar pruebas)
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get("/api-docs.json", (_req, res) => res.json(swaggerSpec));
 

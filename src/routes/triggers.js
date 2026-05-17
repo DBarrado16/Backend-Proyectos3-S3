@@ -1,11 +1,5 @@
 const { Router } = require("express");
-const {
-  listByEvent,
-  getTriggerById,
-  createTrigger,
-  updateTrigger,
-  deleteTrigger,
-} = require("../services/triggersService");
+const triggersService = require("../services/triggersService");
 const {
   triggerCreateSchema,
   triggerUpdateSchema,
@@ -28,6 +22,8 @@ function formatZodError(err) {
  *   get:
  *     summary: Lista todos los triggers asociados a un evento
  *     tags: [Triggers]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: eventID
@@ -45,6 +41,8 @@ function formatZodError(err) {
  *                 $ref: '#/components/schemas/Trigger'
  *       400:
  *         description: Falta eventID
+ *       401:
+ *         description: No autenticado
  */
 router.get("/", async (req, res) => {
   const parsed = listQuerySchema.safeParse(req.query);
@@ -55,7 +53,7 @@ router.get("/", async (req, res) => {
     });
   }
   try {
-    const triggers = await listByEvent(parsed.data.eventID);
+    const triggers = await triggersService.listByEvent(parsed.data.eventID);
     res.json(triggers);
   } catch (err) {
     console.error("Error al listar triggers:", err.message);
@@ -69,6 +67,8 @@ router.get("/", async (req, res) => {
  *   get:
  *     summary: Obtiene un trigger por su id único global
  *     tags: [Triggers]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -85,6 +85,8 @@ router.get("/", async (req, res) => {
  *               $ref: '#/components/schemas/Trigger'
  *       400:
  *         description: ID inválido
+ *       401:
+ *         description: No autenticado
  *       404:
  *         description: Trigger no encontrado
  */
@@ -94,7 +96,7 @@ router.get("/:id", async (req, res) => {
     return res.status(400).json({ error: "INVALID_ID", details: formatZodError(parsed.error) });
   }
   try {
-    const trigger = await getTriggerById(parsed.data.id);
+    const trigger = await triggersService.getTriggerById(parsed.data.id);
     if (!trigger) {
       return res.status(404).json({ error: "TRIGGER_NOT_FOUND" });
     }
@@ -111,6 +113,8 @@ router.get("/:id", async (req, res) => {
  *   post:
  *     summary: Crea un nuevo trigger asociado a un evento
  *     tags: [Triggers]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -126,6 +130,8 @@ router.get("/:id", async (req, res) => {
  *               $ref: '#/components/schemas/Trigger'
  *       400:
  *         description: Datos inválidos
+ *       401:
+ *         description: No autenticado
  */
 router.post("/", async (req, res) => {
   const parsed = triggerCreateSchema.safeParse(req.body);
@@ -133,7 +139,7 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: "INVALID_INPUT", details: formatZodError(parsed.error) });
   }
   try {
-    const trigger = await createTrigger(parsed.data);
+    const trigger = await triggersService.createTrigger(parsed.data);
     res.status(201).json(trigger);
   } catch (err) {
     console.error("Error al crear trigger:", err.message);
@@ -147,6 +153,8 @@ router.post("/", async (req, res) => {
  *   put:
  *     summary: Actualiza un trigger existente (no se permite cambiar eventID)
  *     tags: [Triggers]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -165,6 +173,8 @@ router.post("/", async (req, res) => {
  *         description: Trigger actualizado
  *       400:
  *         description: ID o body inválidos, o body vacío
+ *       401:
+ *         description: No autenticado
  *       404:
  *         description: Trigger no encontrado
  */
@@ -187,7 +197,7 @@ router.put("/:id", async (req, res) => {
   }
 
   try {
-    const trigger = await updateTrigger(idCheck.data.id, bodyCheck.data);
+    const trigger = await triggersService.updateTrigger(idCheck.data.id, bodyCheck.data);
     if (!trigger) {
       return res.status(404).json({ error: "TRIGGER_NOT_FOUND" });
     }
@@ -204,6 +214,8 @@ router.put("/:id", async (req, res) => {
  *   delete:
  *     summary: Elimina un trigger
  *     tags: [Triggers]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -216,6 +228,8 @@ router.put("/:id", async (req, res) => {
  *         description: Trigger eliminado
  *       400:
  *         description: ID inválido
+ *       401:
+ *         description: No autenticado
  *       404:
  *         description: Trigger no encontrado
  */
@@ -225,7 +239,7 @@ router.delete("/:id", async (req, res) => {
     return res.status(400).json({ error: "INVALID_ID", details: formatZodError(parsed.error) });
   }
   try {
-    const ok = await deleteTrigger(parsed.data.id);
+    const ok = await triggersService.deleteTrigger(parsed.data.id);
     if (!ok) {
       return res.status(404).json({ error: "TRIGGER_NOT_FOUND" });
     }

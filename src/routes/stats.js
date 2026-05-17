@@ -1,12 +1,8 @@
 const { Router } = require("express");
 const { z } = require("zod");
-const {
-  getCurrentStats,
-  setCurrentDay,
-  listDays,
-  TOTAL_DAYS,
-} = require("../services/statsService");
-const { evaluateAndDispatchAll } = require("../services/triggersService");
+const statsService = require("../services/statsService");
+const { TOTAL_DAYS } = require("../services/statsService");
+const triggersService = require("../services/triggersService");
 
 const router = Router();
 
@@ -20,13 +16,17 @@ const setDaySchema = z.object({
  *   get:
  *     summary: Obtiene las estadísticas del día actual (apuntado por current.json)
  *     tags: [Stats]
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Estadísticas actuales
+ *       401:
+ *         description: No autenticado
  */
 router.get("/current", async (_req, res) => {
   try {
-    const stats = await getCurrentStats();
+    const stats = await statsService.getCurrentStats();
     res.json(stats);
   } catch (err) {
     console.error("Error al leer stats:", err.message);
@@ -46,6 +46,8 @@ router.get("/current", async (_req, res) => {
  *       Posteriormente, todos los triggers con `warn = true` envían su mensaje
  *       por su canal y a su audiencia.
  *     tags: [Stats]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -63,6 +65,8 @@ router.get("/current", async (_req, res) => {
  *         description: Día actualizado y triggers reevaluados/despachados
  *       400:
  *         description: Día inválido
+ *       401:
+ *         description: No autenticado
  *       404:
  *         description: No existe el día solicitado
  */
@@ -75,15 +79,12 @@ router.put("/current", async (req, res) => {
     });
   }
   try {
-    const result = await setCurrentDay(parsed.data.day);
+    const result = await statsService.setCurrentDay(parsed.data.day);
 
-    // Tras cambiar el día activo, evaluar la condición de cada trigger contra
-    // el nuevo snapshot, actualizar su campo `warn` y despachar el mensaje de
-    // los que han quedado en warn=true.
     let triggersSummary = null;
     try {
-      const snapshot = await getCurrentStats();
-      triggersSummary = await evaluateAndDispatchAll(snapshot);
+      const snapshot = await statsService.getCurrentStats();
+      triggersSummary = await triggersService.evaluateAndDispatchAll(snapshot);
     } catch (err) {
       console.error("Error evaluando/disparando triggers tras PUT /stats/current:", err.message);
       triggersSummary = { error: "TRIGGER_EVALUATION_FAILED", message: err.message };
@@ -108,12 +109,16 @@ router.put("/current", async (req, res) => {
  *   get:
  *     summary: Lista los días disponibles para simular
  *     tags: [Stats]
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de números de día disponibles
+ *       401:
+ *         description: No autenticado
  */
 router.get("/days", async (_req, res) => {
-  const days = await listDays();
+  const days = await statsService.listDays();
   res.json({ days, total: TOTAL_DAYS });
 });
 
